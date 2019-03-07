@@ -73,6 +73,13 @@ class NoCaptcha{
         return '<script src="'.$this->getJsLink().'" async defer></script>'."\n";
     }
 
+    public function setCallBack($callBackName = null){
+        if(!is_null($callBackName)){
+            $this::$callBackName = $callBackName;
+        }
+        return '<script>function '.self::$callBackName.'(data){console.log(data)}</script>';
+    }
+
     public function getCaptcha(){
         return $this->displayWidget().$this->renderJs();
     }

@@ -1,5 +1,5 @@
 <?php
-namespace Lyignore\NoCaptcha;
+namespace Lyignore\Captcha;
 
 use GuzzleHttp\Client;
 
@@ -19,8 +19,6 @@ class NoCaptcha{
 
     public static $type = 'dark';
 
-    public $captchaHtml = '';
-
     public function __construct($secert, $sitekey, $options = []){
         $this->secret = $secert;
         $this->sitekey = $sitekey;
@@ -30,7 +28,6 @@ class NoCaptcha{
 
     protected function getBaseOptions(){
         $options = [
-            'base_uri'  => method_exists($this, 'getBaseUri')? $this->getBaseUri(): '',
             'timeout'   => method_exists($this, 'getTimeout')? $this->getTimeout(): 5.0,
             'verify'    => method_exists($this, 'getVerify')? $this->getVerify(): true
         ];
@@ -43,7 +40,7 @@ class NoCaptcha{
 
     protected function display($attributes = []){
         $attributes = $this->prepareAttributes($attributes);
-        return '<div'. $this->buildAttributes($attributes).'><div>';
+        return '<div' . $this->buildAttributes($attributes) . '></div>';
     }
 
     public function displayWidget($attributes = []){
@@ -116,7 +113,7 @@ class NoCaptcha{
         );
     }
 
-    public function getJsLink($lang = null, $callback = false, $onLoadClass = 'onloadCallBack'){
+    protected function getJsLink($lang = null, $callback = false, $onLoadClass = 'onloadCallBack'){
         $client_api = static::CLIENT_API;
         $params = [];
 

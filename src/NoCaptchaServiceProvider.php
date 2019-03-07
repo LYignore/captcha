@@ -1,5 +1,5 @@
 <?php
-namespace Lyignore\NoCaptcha;
+namespace Lyignore\Captcha;
 
 use Illuminate\Support\ServiceProvider;
 

@@ -22,6 +22,8 @@ class NoCaptcha{
 
     public static $type = 'light';
 
+    protected $typeArray = ['dark', 'light'];
+
     public function __construct(array $config, $options = []){
         $this->config = new Config($config);
         $this->secret = $this->config->get('secret')?:"";
@@ -30,8 +32,10 @@ class NoCaptcha{
         $this->http = new Client($options);
     }
 
-    public function setType(){
-        if($this->config['type']){
+    public function setType($types = null){
+        if(in_array($types, $this->typeArray)){
+            self::$type = $types;
+        }else if($this->config['type']){
             self::$type = $this->config['type'];
         }
         return $this;

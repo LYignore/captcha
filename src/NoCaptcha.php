@@ -1,11 +1,14 @@
 <?php
 namespace Lyignore\Captcha;
 
+use Lyignore\Captcha\Support\Config;
 use GuzzleHttp\Client;
 
 class NoCaptcha{
     const CLIENT_API = 'https://www.recaptcha.net/recaptcha/api.js';
     const VERIFY_URL = 'https://www.recaptcha.net/recaptcha/api/siteverify';
+
+    protected $config;
 
     protected $secret;
 
@@ -17,13 +20,21 @@ class NoCaptcha{
 
     public static $callBackName = 'robotVerified';
 
-    public static $type = 'dark';
+    public static $type = 'light';
 
-    public function __construct($secert, $sitekey, $options = []){
-        $this->secret = $secert;
-        $this->sitekey = $sitekey;
+    public function __construct(array $config, $options = []){
+        $this->config = new Config($config);
+        $this->secret = $this->config->get('secret')?:"";
+        $this->sitekey = $this->config->get('sitekey')?:"";
         $options = $this->getBaseOptions() + $options;
         $this->http = new Client($options);
+    }
+
+    public function setType(){
+        if($this->config['type']){
+            self::$type = $this->config['type'];
+        }
+        return $this;
     }
 
     protected function getBaseOptions(){
@@ -73,10 +84,17 @@ class NoCaptcha{
         return '<script src="'.$this->getJsLink().'" async defer></script>'."\n";
     }
 
-    public function setCallBack($callBackName = null){
+    protected function setCallBackName($callBackName = null){
         if(!is_null($callBackName)){
-            $this::$callBackName = $callBackName;
+            self::$callBackName = $callBackName;
+        }else if($this->config->get('callBackName')){
+            self::$callBackName = $this->config->get('callBackName');
         }
+        return $this;
+    }
+
+    public function setCallBack($callBackName = null){
+        $this->setCallBackName($callBackName);
         return '<script>function '.self::$callBackName.'(data){console.log(data)}</script>';
     }
 
